@@ -177,3 +177,13 @@ button { cursor: pointer; }
   .episode-row { grid-template-columns: 36px 1fr; }
   .episode-length { grid-column: 2; }
 }
+
+.example-topics { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.example-chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 7px 10px; font-size: 12px; color: var(--muted); }
+.example-chip:hover { color: var(--ink); background: var(--soft); }
+.form-error { margin: 12px 2px 0; color: #9b392c; font-size: 13px; }
+.demo-note { margin: 12px 2px 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.course-topic { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .1em; }
+.loading-panel { padding: 120px 0; max-width: 680px; }
+.loading-panel h1 { margin: 20px 0 10px; font-size: clamp(44px, 7vw, 72px); letter-spacing: -.06em; line-height: .95; }
+.loading-panel p { color: var(--muted); line-height: 1.6; margin-bottom: 26px; }

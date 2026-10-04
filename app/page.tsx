@@ -2,25 +2,48 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { saveCourse } from "@/lib/client-course-store";
+import type { CourseLevel } from "@/lib/course-types";
 
-const demoCourseId = "docker-for-beginners";
+const examples = ["Docker", "React", "Photography"];
 
 export default function Home() {
   const router = useRouter();
   const [topic, setTopic] = useState("");
-  const [level, setLevel] = useState("Beginner");
+  const [level, setLevel] = useState<CourseLevel>("Beginner");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!topic.trim()) return;
-    router.push(
-      "/course/" +
-        demoCourseId +
-        "?topic=" +
-        encodeURIComponent(topic.trim()) +
-        "&level=" +
-        encodeURIComponent(level),
-    );
+    const trimmedTopic = topic.trim();
+    if (!trimmedTopic || loading) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: trimmedTopic, level }),
+      });
+
+      const data = (await response.json()) as {
+        course?: Parameters<typeof saveCourse>[0];
+        error?: string;
+      };
+
+      if (!response.ok || !data.course) {
+        throw new Error(data.error || "Unable to create course.");
+      }
+
+      saveCourse(data.course);
+      router.push(`/course/${data.course.id}`);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      setLoading(false);
+    }
   }
 
   return (
@@ -53,11 +76,14 @@ export default function Home() {
                   onChange={(event) => setTopic(event.target.value)}
                   placeholder="e.g. Docker, React, photography..."
                   autoComplete="off"
+                  maxLength={120}
+                  disabled={loading}
                 />
                 <select
                   aria-label="Learning level"
                   value={level}
-                  onChange={(event) => setLevel(event.target.value)}
+                  onChange={(event) => setLevel(event.target.value as CourseLevel)}
+                  disabled={loading}
                 >
                   <option>Beginner</option>
                   <option>Intermediate</option>
@@ -66,13 +92,32 @@ export default function Home() {
                 <button
                   className="primary-button"
                   type="submit"
-                  disabled={!topic.trim()}
+                  disabled={!topic.trim() || loading}
                 >
-                  Create course
+                  {loading ? "Building..." : "Create course"}
                 </button>
+              </div>
+              <div className="example-topics">
+                {examples.map((example) => (
+                  <button
+                    className="example-chip"
+                    key={example}
+                    type="button"
+                    onClick={() => setTopic(example)}
+                    disabled={loading}
+                  >
+                    {example}
+                  </button>
+                ))}
               </div>
             </div>
           </form>
+
+          {error ? <p className="form-error">{error}</p> : null}
+          <p className="demo-note">
+            No API key? No problem. Studycast falls back to the Docker demo so
+            the learning flow stays explorable.
+          </p>
         </section>
 
         <section className="feature-grid" aria-label="Studycast highlights">
@@ -88,16 +133,16 @@ export default function Home() {
             <div className="feature-number">02 / EXPLAIN</div>
             <h2>Learn one idea at a time.</h2>
             <p>
-              Each episode is written around a clear learning goal, examples,
-              and a simple takeaway.
+              Each episode is organized around a clear learning goal and the
+              concepts needed to reach it.
             </p>
           </article>
           <article className="feature-card">
             <div className="feature-number">03 / LISTEN</div>
             <h2>Take the lesson with you.</h2>
             <p>
-              Every episode has a teaching script designed for spoken
-              explanation, not just text read aloud.
+              Every episode will have a dedicated teaching script designed for
+              spoken explanation.
             </p>
           </article>
         </section>

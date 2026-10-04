@@ -2,76 +2,83 @@
 
 > Tell us what you want to learn. We'll turn it into a course you can read or listen to.
 
-Studycast turns a broad learning topic into a structured, multi-episode course. Each episode combines a clear written explanation with a separate teaching script designed for audio.
+Studycast turns a broad learning topic into a structured, multi-episode course. Each episode is designed to become a clear written explanation and a separate teaching lesson.
 
-## v0.1
+## v0.2 — AI Curriculum Planner
 
-The first milestone focuses on the learning experience before connecting the real AI pipeline:
+The current milestone turns the static product shell into an AI-powered curriculum flow:
 
-- Topic input + learning level
-- Course overview / learning map
-- Episode reading experience
-- Separate teaching script
-- Browser speech preview using SpeechSynthesis
-- Responsive editorial-style UI
-- Mock Docker course to validate the flow
+- Topic + learning level input
+- AI-generated course title and description
+- AI-generated 6–10 episode learning path
+- Dependency-aware episode ordering
+- Episode goals and estimated duration
+- OpenAI Responses API integration
+- LLM provider abstraction
+- Demo fallback when no API key is configured
+- Browser-local course persistence for the prototype
 
 ## Product flow
 
 ```text
 Topic
   ↓
+Curriculum Planner
+  ↓
 Learning Map
   ↓
 Episodes
   ↓
-Explanation
-  ├── Text
-  └── Teaching Script → Audio
+Written Explanation + Audio Lesson
 ```
 
-## Planned architecture
+## AI architecture
 
 ```text
-Topic
-  ↓
-Curriculum Planner
-  ↓
+User Topic
+    ↓
+Course Planner
+    ↓
+LLM Provider
+    ↓
 Course Structure
-  ↓
-Explanation Generator
-  ↓
-Teaching Script Generator
-  ↓
-TTS Provider
-  ↓
-Audio Lesson
+    ├── Title
+    ├── Description
+    └── Episodes
+         ├── Goal
+         └── Duration
 ```
 
-The LLM and TTS layers will live behind provider interfaces so model or voice providers can change without rewriting the product layer.
+The LLM layer is provider-based so the product is not coupled to one model vendor.
 
 ## Local development
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Then open http://localhost:3000.
+Set `OPENAI_API_KEY` in `.env.local` for live curriculum generation. `OPENAI_MODEL` can be changed without touching application code.
+
+Without an API key, the API automatically returns the built-in Docker curriculum as a demo fallback.
 
 ## Stack
 
 - Next.js App Router
 - React
 - TypeScript
+- OpenAI Responses API
 - Plain CSS for the initial product shell
+- Browser localStorage for prototype persistence
 
 ## Roadmap
 
 1. Product shell ✅
-2. AI curriculum generation
+2. AI curriculum generation ✅
 3. AI explanation generation
 4. Teaching-script generation
 5. TTS audio generation
-6. Persistence
-7. Polish and deployment
+6. Database persistence
+7. Progress tracking
+8. Polish and deployment

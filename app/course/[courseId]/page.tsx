@@ -1,19 +1,48 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getStoredCourse } from "@/lib/client-course-store";
+import type { Course } from "@/lib/course-types";
 import { demoCourse } from "@/lib/mock-data";
 
-export default async function CoursePage({
-  params,
-}: {
-  params: Promise<{ courseId: string }>;
-}) {
-  const { courseId } = await params;
-  if (courseId !== demoCourse.id) notFound();
+export default function CoursePage() {
+  const params = useParams<{ courseId: string }>();
+  const [course, setCourse] = useState<Course | null>(null);
 
-  const totalMinutes = demoCourse.episodes.reduce(
-    (sum, episode) => sum + episode.duration,
-    0,
-  );
+  useEffect(() => {
+    const stored = getStoredCourse(params.courseId);
+    setCourse(
+      stored ??
+        (params.courseId.startsWith("demo-")
+          ? { ...demoCourse, id: params.courseId }
+          : null),
+    );
+  }, [params.courseId]);
+
+  if (!course) {
+    return (
+      <main className="page-shell">
+        <div className="container">
+          <nav className="navbar">
+            <Link className="brand" href="/">Studycast</Link>
+          </nav>
+          <div className="loading-panel">
+            <span className="eyebrow">Course</span>
+            <h1>Loading your learning path...</h1>
+            <p>
+              This course lives in your current browser session. Generate it
+              again here if it was created on another device.
+            </p>
+            <Link className="back-link" href="/">← Create a new topic</Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const totalMinutes = course.episodes.reduce((sum, episode) => sum + episode.duration, 0);
 
   return (
     <main className="page-shell">
@@ -25,23 +54,22 @@ export default async function CoursePage({
 
         <header className="course-header">
           <Link className="back-link" href="/">← New topic</Link>
-          <h1 className="course-title">{demoCourse.title}</h1>
-          <p className="course-description">{demoCourse.description}</p>
+          <div className="course-topic">{course.topic} · {course.level}</div>
+          <h1 className="course-title">{course.title}</h1>
+          <p className="course-description">{course.description}</p>
           <div className="course-meta">
-            {demoCourse.episodes.length} episodes · {totalMinutes} min · {demoCourse.level}
+            {course.episodes.length} episodes · {totalMinutes} min
           </div>
         </header>
 
         <section className="episode-list" aria-label="Course episodes">
-          {demoCourse.episodes.map((episode) => (
+          {course.episodes.map((episode) => (
             <Link
               className="episode-row"
-              href={`/course/${demoCourse.id}/episode/${episode.id}`}
+              href={`/course/${course.id}/episode/${episode.id}`}
               key={episode.id}
             >
-              <div className="episode-index">
-                {String(episode.order).padStart(2, "0")}
-              </div>
+              <div className="episode-index">{String(episode.order).padStart(2, "0")}</div>
               <div>
                 <div className="episode-title">{episode.title}</div>
                 <div className="episode-goal">{episode.goal}</div>
