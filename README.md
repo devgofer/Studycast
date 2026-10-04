@@ -2,11 +2,11 @@
 
 > Tell us what you want to learn. We'll turn it into a course you can read or listen to.
 
-Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, and playable AI audio lesson.
+Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, playable AI audio lesson, and durable course record.
 
-## v0.4 — AI Audio Lessons
+## v0.5 — Database Persistence
 
-The current milestone turns each teaching script into on-demand spoken audio:
+The current milestone keeps generated courses available beyond one browser session:
 
 - Topic + learning level input
 - AI-generated course title and description
@@ -21,6 +21,10 @@ The current milestone turns each teaching script into on-demand spoken audio:
 - In-page audio player for generated lessons
 - Browser speech preview fallback when AI audio is unavailable
 - Clear disclosure for AI-generated voices
+- libSQL-backed course persistence with a local SQLite default
+- Cloud database support through `DATABASE_URL` and `DATABASE_AUTH_TOKEN`
+- Course restore API for opening saved learning paths on another browser
+- Browser localStorage retained as the immediate prototype cache
 - OpenAI Responses API integration
 - OpenAI Text-to-Speech API integration
 - LLM provider abstraction
@@ -44,6 +48,8 @@ AI Written Explanation + Teaching Script
 AI Audio Lesson
   ↓
 Browser Voice Preview Fallback
+  ↓
+Course Database
 ```
 
 ## AI architecture
@@ -68,6 +74,9 @@ Course Structure
                     ↓
                Speech Generator
                     └── MP3 audio lesson
+                         ↓
+                    Course Repository
+                         └── SQLite or libSQL database
 ```
 
 The LLM layer is provider-based so the product is not coupled to one model vendor.
@@ -81,6 +90,8 @@ npm run dev
 ```
 
 Set `OPENAI_API_KEY` in `.env.local` for live curriculum, lesson, and audio generation. `OPENAI_MODEL`, `OPENAI_TTS_MODEL`, and `OPENAI_TTS_VOICE` can be changed without touching application code.
+
+`DATABASE_URL=file:studycast.db` creates a durable local SQLite database for development. Set `DATABASE_URL` and `DATABASE_AUTH_TOKEN` to a hosted libSQL database for deployment.
 
 Without an API key, the course API automatically returns the built-in Docker curriculum. If a generated episode cannot reach AI, the lesson API returns a focused starter lesson. If audio generation cannot reach AI, the browser voice preview keeps the listening flow available.
 
@@ -99,6 +110,6 @@ Without an API key, the course API automatically returns the built-in Docker cur
 2. AI curriculum generation ✅
 3. AI explanation generation + teaching scripts ✅
 4. TTS audio generation ✅
-5. Database persistence
+5. Database persistence ✅
 6. Progress tracking
 7. Polish and deployment

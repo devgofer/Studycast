@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getStoredCourse } from "@/lib/client-course-store";
+import { getPersistedCourse, getStoredCourse, saveCourse } from "@/lib/client-course-store";
 import type { Course } from "@/lib/course-types";
 import { demoCourse } from "@/lib/mock-data";
 
@@ -12,19 +12,32 @@ export default function CoursePage() {
   const [course, setCourse] = useState<Course | null>(null);
 
   useEffect(() => {
-    const stored = getStoredCourse(params.courseId);
     let cancelled = false;
 
-    queueMicrotask(() => {
-      if (!cancelled) {
-        setCourse(
-          stored ??
-            (params.courseId.startsWith("demo-")
-              ? { ...demoCourse, id: params.courseId }
-              : null),
-        );
+    async function loadCourse() {
+      const stored = getStoredCourse(params.courseId);
+      if (stored) {
+        if (!cancelled) setCourse(stored);
+        return;
       }
-    });
+
+      const persisted = await getPersistedCourse(params.courseId);
+      if (cancelled) return;
+
+      if (persisted) {
+        saveCourse(persisted);
+        setCourse(persisted);
+        return;
+      }
+
+      setCourse(
+        params.courseId.startsWith("demo-")
+          ? { ...demoCourse, id: params.courseId }
+          : null,
+      );
+    }
+
+    void loadCourse();
 
     return () => { cancelled = true; };
   }, [params.courseId]);
