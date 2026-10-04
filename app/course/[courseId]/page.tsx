@@ -54,8 +54,8 @@ export default function CoursePage() {
             <span className="eyebrow">Course</span>
             <h1>Loading your learning path...</h1>
             <p>
-              This course lives in your current browser session. Generate it
-              again here if it was created on another device.
+              Studycast is restoring your saved learning path. You can also
+              create a fresh course from a new topic.
             </p>
             <Link className="back-link" href="/">← Create a new topic</Link>
           </div>
@@ -67,6 +67,8 @@ export default function CoursePage() {
   const totalMinutes = course.episodes.reduce((sum, episode) => sum + episode.duration, 0);
   const completedEpisodes = getCompletedEpisodeCount(course);
   const progressPercent = getCourseProgressPercent(course);
+  const nextEpisode = course.episodes.find((episode) => !episode.completedAt) ?? course.episodes.at(-1);
+  const hasCompletedCourse = completedEpisodes === course.episodes.length;
 
   return (
     <main className="page-shell">
@@ -93,6 +95,11 @@ export default function CoursePage() {
               <span style={{ width: `${progressPercent}%` }} />
             </div>
             <div className="course-progress-percent">{progressPercent}% complete</div>
+            {nextEpisode ? (
+              <Link className="resume-button" href={`/course/${course.id}/episode/${nextEpisode.id}`}>
+                {hasCompletedCourse ? "Review final lesson →" : `Continue: ${nextEpisode.title} →`}
+              </Link>
+            ) : null}
           </section>
         </header>
 

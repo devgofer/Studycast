@@ -2,11 +2,11 @@
 
 > Tell us what you want to learn. We'll turn it into a course you can read or listen to.
 
-Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, playable AI audio lesson, durable course record, and visible learning progress.
+Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, playable AI audio lesson, durable course record, visible learning progress, and a clear next step.
 
-## v0.6 — Progress Tracking
+## v0.7 — Polish & Deployment
 
-The current milestone turns a saved course into an active learning path:
+The current milestone prepares Studycast for production deployment and smoother day-to-day learning:
 
 - Topic + learning level input
 - AI-generated course title and description
@@ -28,6 +28,10 @@ The current milestone turns a saved course into an active learning path:
 - Mark individual lessons complete or incomplete
 - Course-level completed count and percentage progress bar
 - Completion state stored locally and synchronized to the course database
+- Resume button points learners to their next incomplete lesson
+- Completed courses offer a final-lesson review path
+- Keyboard focus states and reduced-motion support
+- Vercel deployment runbook with libSQL environment configuration
 - OpenAI Responses API integration
 - OpenAI Text-to-Speech API integration
 - LLM provider abstraction
@@ -55,6 +59,8 @@ Browser Voice Preview Fallback
 Course Database
   ↓
 Progress Tracking
+  ↓
+Resume Learning
 ```
 
 ## AI architecture
@@ -84,6 +90,8 @@ Course Structure
                          └── SQLite or libSQL database
                               ↓
                          Completion state
+                              ↓
+                         Resume learning
 ```
 
 The LLM layer is provider-based so the product is not coupled to one model vendor.
@@ -102,6 +110,22 @@ Set `OPENAI_API_KEY` in `.env.local` for live curriculum, lesson, and audio gene
 
 Without an API key, the course API automatically returns the built-in Docker curriculum. If a generated episode cannot reach AI, the lesson API returns a focused starter lesson. If audio generation cannot reach AI, the browser voice preview keeps the listening flow available.
 
+## Deployment
+
+Studycast deploys directly to Vercel as a Next.js App Router project.
+
+1. Import the `devgofer/Studycast` repository into Vercel.
+2. Set the production environment variables:
+   - `OPENAI_API_KEY`
+   - `OPENAI_MODEL` (optional; defaults to `gpt-5.5`)
+   - `OPENAI_TTS_MODEL` (optional; defaults to `gpt-4o-mini-tts`)
+   - `OPENAI_TTS_VOICE` (optional; defaults to `cedar`)
+   - `DATABASE_URL` (hosted libSQL database URL)
+   - `DATABASE_AUTH_TOKEN` (hosted libSQL auth token)
+3. Deploy with Vercel's default build command: `npm run build`.
+
+The local `file:studycast.db` database supports development. Production uses a hosted libSQL database so courses and completion progress remain durable across deployments.
+
 ## Stack
 
 - Next.js App Router
@@ -119,4 +143,4 @@ Without an API key, the course API automatically returns the built-in Docker cur
 4. TTS audio generation ✅
 5. Database persistence ✅
 6. Progress tracking ✅
-7. Polish and deployment
+7. Polish and deployment ✅

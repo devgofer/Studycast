@@ -93,8 +93,9 @@ export default function Home() {
                   className="primary-button"
                   type="submit"
                   disabled={!topic.trim() || loading}
+                  aria-busy={loading}
                 >
-                  {loading ? "Building..." : "Create course"}
+                  {loading ? "Building learning path..." : "Create course"}
                 </button>
               </div>
               <div className="example-topics">
@@ -115,8 +116,8 @@ export default function Home() {
 
           {error ? <p className="form-error">{error}</p> : null}
           <p className="demo-note">
-            No API key? No problem. Studycast falls back to the Docker demo so
-            the learning flow stays explorable.
+            Studycast keeps the learning flow available with a Docker demo when
+            AI generation is unavailable.
           </p>
         </section>
 
