@@ -131,6 +131,27 @@ export default function EpisodePage() {
   const previous = course.episodes.find((item) => item.order === episode.order - 1);
   const next = course.episodes.find((item) => item.order === episode.order + 1);
   const explanation = episode.lesson;
+  const isComplete = Boolean(episode.completedAt);
+  const currentCourse = course;
+  const currentEpisode = episode;
+
+  function toggleCompletion() {
+    const updatedCourse: Course = {
+      ...currentCourse,
+      episodes: currentCourse.episodes.map((item) => {
+        if (item.id !== currentEpisode.id) return item;
+        if (item.completedAt) {
+          const incompleteEpisode = { ...item };
+          delete incompleteEpisode.completedAt;
+          return incompleteEpisode;
+        }
+        return { ...item, completedAt: new Date().toISOString() };
+      }),
+    };
+
+    saveCourse(updatedCourse);
+    setCourse(updatedCourse);
+  }
 
   return (
     <main className="page-shell">
@@ -145,6 +166,14 @@ export default function EpisodePage() {
         </div>
 
         <h1 className="episode-heading">{episode.title}</h1>
+
+        <button
+          className={`completion-button ${isComplete ? "complete" : ""}`}
+          type="button"
+          onClick={toggleCompletion}
+        >
+          {isComplete ? "✓ Completed — mark incomplete" : "Mark lesson complete"}
+        </button>
 
         {lessonStatus === "loading" && !explanation ? (
           <div className="lesson-state" aria-live="polite">

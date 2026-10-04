@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getPersistedCourse, getStoredCourse, saveCourse } from "@/lib/client-course-store";
+import { getCompletedEpisodeCount, getCourseProgressPercent } from "@/lib/course-progress";
 import type { Course } from "@/lib/course-types";
 import { demoCourse } from "@/lib/mock-data";
 
@@ -64,6 +65,8 @@ export default function CoursePage() {
   }
 
   const totalMinutes = course.episodes.reduce((sum, episode) => sum + episode.duration, 0);
+  const completedEpisodes = getCompletedEpisodeCount(course);
+  const progressPercent = getCourseProgressPercent(course);
 
   return (
     <main className="page-shell">
@@ -81,21 +84,35 @@ export default function CoursePage() {
           <div className="course-meta">
             {course.episodes.length} episodes · {totalMinutes} min
           </div>
+          <section className="course-progress" aria-label="Course progress">
+            <div className="course-progress-label">
+              <span>Your progress</span>
+              <strong>{completedEpisodes} of {course.episodes.length} complete</strong>
+            </div>
+            <div className="course-progress-track" aria-hidden="true">
+              <span style={{ width: `${progressPercent}%` }} />
+            </div>
+            <div className="course-progress-percent">{progressPercent}% complete</div>
+          </section>
         </header>
 
         <section className="episode-list" aria-label="Course episodes">
           {course.episodes.map((episode) => (
             <Link
-              className="episode-row"
+              className={`episode-row ${episode.completedAt ? "complete" : ""}`}
               href={`/course/${course.id}/episode/${episode.id}`}
               key={episode.id}
             >
-              <div className="episode-index">{String(episode.order).padStart(2, "0")}</div>
+              <div className="episode-index">
+                {episode.completedAt ? "✓" : String(episode.order).padStart(2, "0")}
+              </div>
               <div>
                 <div className="episode-title">{episode.title}</div>
                 <div className="episode-goal">{episode.goal}</div>
               </div>
-              <div className="episode-length">{episode.duration} min →</div>
+              <div className="episode-length">
+                {episode.completedAt ? "Complete · " : ""}{episode.duration} min →
+              </div>
             </Link>
           ))}
         </section>

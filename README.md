@@ -2,11 +2,11 @@
 
 > Tell us what you want to learn. We'll turn it into a course you can read or listen to.
 
-Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, playable AI audio lesson, and durable course record.
+Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, playable AI audio lesson, durable course record, and visible learning progress.
 
-## v0.5 — Database Persistence
+## v0.6 — Progress Tracking
 
-The current milestone keeps generated courses available beyond one browser session:
+The current milestone turns a saved course into an active learning path:
 
 - Topic + learning level input
 - AI-generated course title and description
@@ -25,6 +25,9 @@ The current milestone keeps generated courses available beyond one browser sessi
 - Cloud database support through `DATABASE_URL` and `DATABASE_AUTH_TOKEN`
 - Course restore API for opening saved learning paths on another browser
 - Browser localStorage retained as the immediate prototype cache
+- Mark individual lessons complete or incomplete
+- Course-level completed count and percentage progress bar
+- Completion state stored locally and synchronized to the course database
 - OpenAI Responses API integration
 - OpenAI Text-to-Speech API integration
 - LLM provider abstraction
@@ -50,6 +53,8 @@ AI Audio Lesson
 Browser Voice Preview Fallback
   ↓
 Course Database
+  ↓
+Progress Tracking
 ```
 
 ## AI architecture
@@ -77,6 +82,8 @@ Course Structure
                          ↓
                     Course Repository
                          └── SQLite or libSQL database
+                              ↓
+                         Completion state
 ```
 
 The LLM layer is provider-based so the product is not coupled to one model vendor.
@@ -111,5 +118,5 @@ Without an API key, the course API automatically returns the built-in Docker cur
 3. AI explanation generation + teaching scripts ✅
 4. TTS audio generation ✅
 5. Database persistence ✅
-6. Progress tracking
+6. Progress tracking ✅
 7. Polish and deployment

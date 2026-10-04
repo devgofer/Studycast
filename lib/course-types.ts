@@ -20,6 +20,7 @@ export type CourseEpisode = {
   goal: string;
   duration: number;
   lesson?: EpisodeLesson;
+  completedAt?: string;
 };
 
 export type Course = {

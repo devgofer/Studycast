@@ -32,7 +32,8 @@ function isEpisode(value: unknown): value is CourseEpisode {
     isText(episode.title) &&
     isText(episode.goal) &&
     typeof episode.duration === "number" && Number.isFinite(episode.duration) && episode.duration > 0 &&
-    (episode.lesson === undefined || isLesson(episode.lesson));
+    (episode.lesson === undefined || isLesson(episode.lesson)) &&
+    (episode.completedAt === undefined || isText(episode.completedAt));
 }
 
 export function isCourse(value: unknown): value is Course {

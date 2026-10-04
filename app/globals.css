@@ -107,6 +107,12 @@ button { cursor: pointer; }
 .course-title { margin: 20px 0 14px; font-size: clamp(46px, 7vw, 78px); line-height: .95; letter-spacing: -.06em; }
 .course-description { max-width: 650px; color: var(--muted); font-size: 18px; line-height: 1.6; }
 .course-meta { margin-top: 22px; color: var(--muted); font-size: 13px; }
+.course-progress { max-width: 520px; margin-top: 28px; }
+.course-progress-label { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 13px; }
+.course-progress-label strong { color: var(--ink); font-weight: 700; }
+.course-progress-track { height: 7px; margin: 10px 0 8px; overflow: hidden; border-radius: 999px; background: var(--soft); }
+.course-progress-track span { display: block; height: 100%; border-radius: inherit; background: var(--ink); transition: width .25s ease; }
+.course-progress-percent { color: var(--muted); font-size: 12px; }
 .episode-list { padding: 12px 0 80px; }
 .episode-row {
   display: grid;
@@ -118,6 +124,8 @@ button { cursor: pointer; }
   transition: transform .2s ease;
 }
 .episode-row:hover { transform: translateX(4px); }
+.episode-row.complete .episode-index { color: #39734a; font-weight: 800; }
+.episode-row.complete .episode-title { color: var(--muted); }
 .episode-index { color: var(--muted); font-variant-numeric: tabular-nums; }
 .episode-title { font-size: 22px; letter-spacing: -.035em; }
 .episode-goal { margin-top: 6px; color: var(--muted); line-height: 1.5; }
@@ -127,6 +135,8 @@ button { cursor: pointer; }
 .episode-top { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
 .episode-label { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .1em; }
 .episode-heading { max-width: 800px; margin: 20px 0 46px; font-size: clamp(48px, 7vw, 82px); line-height: .95; letter-spacing: -.065em; }
+.completion-button { margin: -18px 0 36px; border: 1px solid var(--ink); border-radius: 999px; padding: 10px 14px; background: transparent; color: var(--ink); font-weight: 700; }
+.completion-button.complete { border-color: #39734a; background: #edf6ef; color: #286238; }
 .content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 46px; }
 .reader { max-width: 740px; }
 .reader h2 { margin: 44px 0 14px; font-size: 25px; letter-spacing: -.04em; }
