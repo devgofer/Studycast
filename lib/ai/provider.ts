@@ -1,4 +1,5 @@
 import type { Course, CourseEpisode, CourseLevel, EpisodeLesson } from "@/lib/course-types";
+import type { TtsVoice } from "@/lib/tts-voices";
 
 export type CoursePlanInput = {
   topic: string;
@@ -12,6 +13,7 @@ export type LessonGenerationInput = {
 
 export type SpeechGenerationInput = {
   teachingScript: string;
+  voice?: TtsVoice;
 };
 
 export interface LLMProvider {

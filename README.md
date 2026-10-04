@@ -19,6 +19,7 @@ The current milestone prepares Studycast for production deployment and smoother 
 - Generated lessons saved back to browser-local course storage
 - AI-generated MP3 audio from each teaching script
 - In-page audio player for generated lessons
+- Per-lesson AI voice selection
 - Browser speech preview fallback when AI audio is unavailable
 - Clear disclosure for AI-generated voices
 - libSQL-backed course persistence with a local SQLite default

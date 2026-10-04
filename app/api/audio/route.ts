@@ -1,10 +1,11 @@
 import { createSpeech } from "@/lib/ai/course-planner";
+import { isTtsVoice } from "@/lib/tts-voices";
 
 const MAX_SCRIPT_LENGTH = 4096;
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { teachingScript?: unknown };
+    const body = (await request.json()) as { teachingScript?: unknown; voice?: unknown };
     const teachingScript = typeof body.teachingScript === "string"
       ? body.teachingScript.trim()
       : "";
@@ -16,7 +17,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const audio = await createSpeech({ teachingScript });
+    if (body.voice !== undefined && !isTtsVoice(body.voice)) {
+      return Response.json({ error: "Choose a supported voice." }, { status: 400 });
+    }
+
+    const audio = await createSpeech({ teachingScript, voice: body.voice });
     return new Response(audio, {
       headers: {
         "Content-Type": "audio/mpeg",

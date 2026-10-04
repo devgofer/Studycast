@@ -163,6 +163,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .audio-kicker { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
 .audio-card h2 { margin: 10px 0 6px; font-size: 24px; letter-spacing: -.04em; }
 .audio-card p { margin: 0 0 20px; color: var(--muted); line-height: 1.55; }
+.voice-selector { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0; color: var(--muted); font-size: 13px; }
+.voice-selector select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: var(--paper); color: var(--ink); }
 .play-button { width: 100%; border: 1px solid var(--ink); border-radius: 14px; padding: 14px 16px; background: transparent; font-weight: 700; }
 .play-button.active { background: var(--ink); color: white; }
 .audio-progress { height: 4px; margin: 20px 0 9px; overflow: hidden; border-radius: 999px; background: var(--soft); }

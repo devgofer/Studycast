@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ttsVoices, type TtsVoice } from "@/lib/tts-voices";
 
 type AudioCardProps = {
   title: string;
@@ -11,6 +12,7 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
   const [status, setStatus] = useState<"idle" | "generating" | "playing" | "fallback" | "error">("idle");
   const [message, setMessage] = useState("");
   const [hasGeneratedAudio, setHasGeneratedAudio] = useState(false);
+  const [voice, setVoice] = useState<TtsVoice>("cedar");
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioUrlRef = useRef<string | null>(null);
 
@@ -48,6 +50,16 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
     setMessage("");
   }
 
+  function changeVoice(nextVoice: TtsVoice) {
+    stopAudio();
+    if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+    audioUrlRef.current = null;
+    audioRef.current?.removeAttribute("src");
+    audioRef.current?.load();
+    setHasGeneratedAudio(false);
+    setVoice(nextVoice);
+  }
+
   async function playLesson() {
     if (status === "playing" || status === "fallback") {
       stopAudio();
@@ -73,7 +85,7 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
       const response = await fetch("/api/audio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teachingScript }),
+        body: JSON.stringify({ teachingScript, voice }),
       });
 
       if (!response.ok) {
@@ -104,6 +116,19 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
       <p>
         Generate spoken audio from this episode&apos;s dedicated teaching script.
       </p>
+      <label className="voice-selector" htmlFor="voice">
+        <span>AI voice</span>
+        <select
+          id="voice"
+          value={voice}
+          onChange={(event) => changeVoice(event.target.value as TtsVoice)}
+          disabled={status === "generating"}
+        >
+          {ttsVoices.map((option) => (
+            <option key={option.id} value={option.id}>{option.label}</option>
+          ))}
+        </select>
+      </label>
       <button
         className={`play-button ${status === "playing" || status === "fallback" ? "active" : ""}`}
         onClick={playLesson}

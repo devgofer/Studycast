@@ -244,7 +244,7 @@ Rules:
       },
       body: JSON.stringify({
         model: process.env.OPENAI_TTS_MODEL || DEFAULT_TTS_MODEL,
-        voice: process.env.OPENAI_TTS_VOICE || DEFAULT_TTS_VOICE,
+        voice: input.voice || process.env.OPENAI_TTS_VOICE || DEFAULT_TTS_VOICE,
         input: input.teachingScript,
         instructions: "Speak warmly and clearly, at a measured teaching pace. Pause briefly between ideas and make technical concepts feel approachable.",
         response_format: "mp3",
