@@ -13,6 +13,8 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
   const [message, setMessage] = useState("");
   const [hasGeneratedAudio, setHasGeneratedAudio] = useState(false);
   const [voice, setVoice] = useState<TtsVoice>("cedar");
+  const [browserVoices, setBrowserVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [browserVoiceName, setBrowserVoiceName] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioUrlRef = useRef<string | null>(null);
 
@@ -21,6 +23,20 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
       window.speechSynthesis?.cancel();
       if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     };
+  }, []);
+
+  useEffect(() => {
+    if (!window.speechSynthesis) return;
+
+    function loadBrowserVoices() {
+      const voices = window.speechSynthesis.getVoices();
+      setBrowserVoices(voices);
+      setBrowserVoiceName((current) => current || voices[0]?.name || "");
+    }
+
+    loadBrowserVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", loadBrowserVoices);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", loadBrowserVoices);
   }, []);
 
   function playBrowserPreview() {
@@ -33,6 +49,8 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(teachingScript);
+    const selectedVoice = browserVoices.find((voice) => voice.name === browserVoiceName);
+    if (selectedVoice) utterance.voice = selectedVoice;
     utterance.rate = 0.95;
     utterance.pitch = 1;
     utterance.onend = () => setStatus("idle");
@@ -129,6 +147,23 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
           ))}
         </select>
       </label>
+      {browserVoices.length > 0 ? (
+        <label className="voice-selector" htmlFor="browser-voice">
+          <span>Browser voice</span>
+          <select
+            id="browser-voice"
+            value={browserVoiceName}
+            onChange={(event) => setBrowserVoiceName(event.target.value)}
+            disabled={status === "generating"}
+          >
+            {browserVoices.map((option) => (
+              <option key={`${option.name}-${option.lang}`} value={option.name}>
+                {option.name} ({option.lang})
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
       <button
         className={`play-button ${status === "playing" || status === "fallback" ? "active" : ""}`}
         onClick={playLesson}
