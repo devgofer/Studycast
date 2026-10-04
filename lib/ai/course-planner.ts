@@ -1,7 +1,7 @@
 import { demoCourse } from "@/lib/mock-data";
 import type { Course, CourseEpisode, CourseLevel, EpisodeLesson } from "@/lib/course-types";
 import { OpenAIProvider } from "./openai-provider";
-import type { LLMProvider } from "./provider";
+import type { LLMProvider, SpeechGenerationInput } from "./provider";
 
 function getProvider(): LLMProvider {
   return new OpenAIProvider();
@@ -16,6 +16,10 @@ export async function createLesson(
   episode: CourseEpisode,
 ): Promise<EpisodeLesson> {
   return getProvider().generateLesson({ course, episode });
+}
+
+export async function createSpeech(input: SpeechGenerationInput): Promise<ArrayBuffer> {
+  return getProvider().generateSpeech(input);
 }
 
 export function getDemoFallback(topic: string, level: CourseLevel): Course {

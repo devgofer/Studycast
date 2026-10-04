@@ -1,7 +1,14 @@
 import type { Course, CourseEpisode, EpisodeLesson, LessonSection } from "@/lib/course-types";
-import type { CoursePlanInput, LessonGenerationInput, LLMProvider } from "./provider";
+import type {
+  CoursePlanInput,
+  LessonGenerationInput,
+  LLMProvider,
+  SpeechGenerationInput,
+} from "./provider";
 
 const DEFAULT_MODEL = "gpt-5.5";
+const DEFAULT_TTS_MODEL = "gpt-4o-mini-tts";
+const DEFAULT_TTS_VOICE = "cedar";
 
 type OpenAIOutput = {
   output?: Array<{
@@ -223,5 +230,32 @@ Rules:
 
     const data = (await response.json()) as OpenAIOutput;
     return parseLesson(extractOutputText(data));
+  }
+
+  async generateSpeech(input: SpeechGenerationInput): Promise<ArrayBuffer> {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) throw new Error("OPENAI_API_KEY is not configured.");
+
+    const response = await fetch("https://api.openai.com/v1/audio/speech", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_TTS_MODEL || DEFAULT_TTS_MODEL,
+        voice: process.env.OPENAI_TTS_VOICE || DEFAULT_TTS_VOICE,
+        input: input.teachingScript,
+        instructions: "Speak warmly and clearly, at a measured teaching pace. Pause briefly between ideas and make technical concepts feel approachable.",
+        response_format: "mp3",
+      }),
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(`OpenAI speech request failed (${response.status}): ${detail.slice(0, 300)}`);
+    }
+
+    return response.arrayBuffer();
   }
 }

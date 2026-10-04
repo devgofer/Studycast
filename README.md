@@ -2,11 +2,11 @@
 
 > Tell us what you want to learn. We'll turn it into a course you can read or listen to.
 
-Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation and a separate teaching script for listening.
+Studycast turns a broad learning topic into a structured, multi-episode course. Each episode can become a clear written explanation, teaching script, and playable AI audio lesson.
 
-## v0.3 — AI Explanation Generator
+## v0.4 — AI Audio Lessons
 
-The current milestone turns each generated course outline into on-demand lessons:
+The current milestone turns each teaching script into on-demand spoken audio:
 
 - Topic + learning level input
 - AI-generated course title and description
@@ -17,7 +17,12 @@ The current milestone turns each generated course outline into on-demand lessons
 - AI-generated teaching scripts, separate from the written lesson
 - Loading, error, retry, and lesson-fallback states on every episode
 - Generated lessons saved back to browser-local course storage
+- AI-generated MP3 audio from each teaching script
+- In-page audio player for generated lessons
+- Browser speech preview fallback when AI audio is unavailable
+- Clear disclosure for AI-generated voices
 - OpenAI Responses API integration
+- OpenAI Text-to-Speech API integration
 - LLM provider abstraction
 - Docker demo course fallback when no API key is configured
 - Starter-lesson fallback if lesson generation is unavailable
@@ -36,7 +41,9 @@ Episodes
   ↓
 AI Written Explanation + Teaching Script
   ↓
-Browser Voice Preview
+AI Audio Lesson
+  ↓
+Browser Voice Preview Fallback
 ```
 
 ## AI architecture
@@ -58,6 +65,9 @@ Course Structure
          Lesson Generator
               ├── Written explanation
               └── Teaching script
+                    ↓
+               Speech Generator
+                    └── MP3 audio lesson
 ```
 
 The LLM layer is provider-based so the product is not coupled to one model vendor.
@@ -70,9 +80,9 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Set `OPENAI_API_KEY` in `.env.local` for live curriculum and lesson generation. `OPENAI_MODEL` can be changed without touching application code.
+Set `OPENAI_API_KEY` in `.env.local` for live curriculum, lesson, and audio generation. `OPENAI_MODEL`, `OPENAI_TTS_MODEL`, and `OPENAI_TTS_VOICE` can be changed without touching application code.
 
-Without an API key, the course API automatically returns the built-in Docker curriculum. If a generated episode cannot reach AI, the lesson API returns a focused starter lesson so the reading and listening flow remains usable.
+Without an API key, the course API automatically returns the built-in Docker curriculum. If a generated episode cannot reach AI, the lesson API returns a focused starter lesson. If audio generation cannot reach AI, the browser voice preview keeps the listening flow available.
 
 ## Stack
 
@@ -88,7 +98,7 @@ Without an API key, the course API automatically returns the built-in Docker cur
 1. Product shell ✅
 2. AI curriculum generation ✅
 3. AI explanation generation + teaching scripts ✅
-4. TTS audio generation
+4. TTS audio generation ✅
 5. Database persistence
 6. Progress tracking
 7. Polish and deployment
