@@ -13,12 +13,20 @@ export default function CoursePage() {
 
   useEffect(() => {
     const stored = getStoredCourse(params.courseId);
-    setCourse(
-      stored ??
-        (params.courseId.startsWith("demo-")
-          ? { ...demoCourse, id: params.courseId }
-          : null),
-    );
+    let cancelled = false;
+
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setCourse(
+          stored ??
+            (params.courseId.startsWith("demo-")
+              ? { ...demoCourse, id: params.courseId }
+              : null),
+        );
+      }
+    });
+
+    return () => { cancelled = true; };
   }, [params.courseId]);
 
   if (!course) {

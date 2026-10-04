@@ -187,3 +187,9 @@ button { cursor: pointer; }
 .loading-panel { padding: 120px 0; max-width: 680px; }
 .loading-panel h1 { margin: 20px 0 10px; font-size: clamp(44px, 7vw, 72px); letter-spacing: -.06em; line-height: .95; }
 .loading-panel p { color: var(--muted); line-height: 1.6; margin-bottom: 26px; }
+.lesson-state { max-width: 680px; padding: 8px 0 56px; }
+.lesson-state h2 { margin: 20px 0 10px; font-size: clamp(32px, 5vw, 52px); letter-spacing: -.055em; line-height: .98; }
+.lesson-state p { color: var(--muted); font-size: 17px; line-height: 1.65; }
+.lesson-state .primary-button { margin-top: 8px; }
+.lesson-error { padding: 28px; border: 1px solid #d9a59d; border-radius: 18px; background: #fff8f6; }
+.lesson-notice { margin: -20px 0 28px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 14px; color: var(--muted); font-size: 14px; line-height: 1.5; background: rgba(255,255,255,.45); }

@@ -39,8 +39,7 @@ export function AudioCard({ title, teachingScript }: AudioCardProps) {
       <div className="audio-kicker">Listen to this lesson</div>
       <h2>{title}</h2>
       <p>
-        Browser speech preview for v0.1. The final version will use generated
-        teaching audio.
+        Listen to the dedicated teaching script with a browser voice preview.
       </p>
       <button
         className={`play-button ${playing ? "active" : ""}`}

@@ -1,24 +1,4 @@
-export type Episode = {
-  id: string;
-  order: number;
-  title: string;
-  goal: string;
-  duration: number;
-  lead: string;
-  sections: { heading: string; body: string }[];
-  callout?: string;
-  takeaway: string;
-  teachingScript: string;
-};
-
-export type Course = {
-  id: string;
-  title: string;
-  description: string;
-  topic: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  episodes: Episode[];
-};
+import type { Course } from "@/lib/course-types";
 
 export const demoCourse: Course = {
   id: "docker-for-beginners",
@@ -34,6 +14,7 @@ export const demoCourse: Course = {
       title: "Why Docker Exists",
       goal: "Understand the problem Docker is designed to solve.",
       duration: 8,
+      lesson: {
       lead:
         "Before learning Docker commands, start with the problem. Docker becomes much easier once you understand why containers are useful in the first place.",
       sections: [
@@ -59,6 +40,7 @@ export const demoCourse: Course = {
         "Docker helps make an application's runtime environment more predictable and portable.",
       teachingScript:
         "Before we touch a Docker command, let's talk about why Docker exists. Imagine you build an application on your laptop. It works perfectly. Then a teammate clones the same project, and somehow it breaks. The code is the same, but the environment isn't. Docker is a way of making that environment explicit and portable. Once that mental model clicks, the rest of Docker starts to feel much less mysterious.",
+      },
     },
     {
       id: "what-is-a-container",
@@ -66,6 +48,7 @@ export const demoCourse: Course = {
       title: "What Is a Container?",
       goal: "Build the right mental model for a running container.",
       duration: 7,
+      lesson: {
       lead:
         "A container is an isolated process with the files, configuration, and dependencies it needs to run. It is not a tiny virtual machine.",
       sections: [
@@ -91,6 +74,7 @@ export const demoCourse: Course = {
         "A container is a running, isolated process created from an image.",
       teachingScript:
         "Here's the easiest way to think about a container. It is not a miniature computer. It is a running process with its own isolated environment. And this gives us an important distinction: an image is the packaged template, while a container is the running instance. You can create multiple containers from the same image, just like you can make several identical things from the same recipe.",
+      },
     },
     {
       id: "images-vs-containers",
@@ -98,6 +82,7 @@ export const demoCourse: Course = {
       title: "Images vs. Containers",
       goal: "Understand the relationship between an image and a running container.",
       duration: 8,
+      lesson: {
       lead:
         "Once you understand images and containers as separate concepts, Docker's workflow becomes much easier to reason about.",
       sections: [
@@ -123,6 +108,7 @@ export const demoCourse: Course = {
         "Images are reusable package templates; containers are running instances of those images.",
       teachingScript:
         "Let's separate two words that beginners often mix up: image and container. Think of an image as a recipe or blueprint. It describes what should be inside. A container is the thing you actually run. So you build or download an image, and then you create a container from it. That one distinction makes a huge part of Docker's vocabulary suddenly much easier.",
+      },
     },
     {
       id: "dockerfile",
@@ -130,6 +116,7 @@ export const demoCourse: Course = {
       title: "Dockerfile",
       goal: "Understand how a Dockerfile describes the steps used to build an image.",
       duration: 9,
+      lesson: {
       lead:
         "A Dockerfile is a small, declarative recipe that tells Docker how to assemble an image.",
       sections: [
@@ -155,6 +142,7 @@ export const demoCourse: Course = {
         "A Dockerfile describes how to build a repeatable application image.",
       teachingScript:
         "A Dockerfile is basically a recipe for building an image. You choose a starting point, add your application and dependencies, configure the environment, and define the command to run. The useful part is that the build instructions live in code. So instead of saying, ‘install these seven things and remember this setup,’ you can describe the setup and rebuild it consistently.",
+      },
     },
     {
       id: "running-containers",
@@ -162,6 +150,7 @@ export const demoCourse: Course = {
       title: "Running Containers",
       goal: "Understand the basic lifecycle of a container.",
       duration: 7,
+      lesson: {
       lead:
         "Starting a container is only one part of the workflow. You also need to understand how containers are inspected, stopped, and removed.",
       sections: [
@@ -185,6 +174,7 @@ export const demoCourse: Course = {
         "Treat containers as manageable, disposable runtime instances instead of permanent machines.",
       teachingScript:
         "Once you have an image, you can run a container from it. But real Docker work is not just about starting things. You will inspect containers, read logs, stop them, restart them, and eventually remove them. That disposable mindset is important: a container is a runtime instance, not a precious little server that you need to protect forever.",
+      },
     },
     {
       id: "volumes",
@@ -192,6 +182,7 @@ export const demoCourse: Course = {
       title: "Volumes & Persistent Data",
       goal: "Understand what happens to data when containers are replaced.",
       duration: 8,
+      lesson: {
       lead:
         "Containers are disposable, but your data often is not. Volumes provide a durable place for data that should outlive an individual container.",
       sections: [
@@ -215,6 +206,7 @@ export const demoCourse: Course = {
         "Use persistent storage for data that should survive container replacement.",
       teachingScript:
         "Here's one of the most important practical questions in Docker: what happens to my data when I replace the container? Containers are designed to be disposable, but databases and uploaded files usually are not. A volume gives you storage that exists outside the container's own lifecycle. So the application can still read and write data, while the data survives when the container is recreated.",
+      },
     },
     {
       id: "networking",
@@ -222,6 +214,7 @@ export const demoCourse: Course = {
       title: "Networking",
       goal: "Understand how containers communicate with each other and the outside world.",
       duration: 9,
+      lesson: {
       lead:
         "Container networking becomes much simpler when you think in terms of processes, interfaces, and names rather than machines.",
       sections: [
@@ -245,6 +238,7 @@ export const demoCourse: Course = {
         "Docker networking connects isolated processes while keeping service discovery and port exposure explicit.",
       teachingScript:
         "Containers are isolated, but applications still need to communicate. A web app may need a database, for example. Docker networks provide that connection. One helpful detail is that services can usually talk to each other by name instead of relying on an IP address that might change. Then you have ports, which are about exposing a service to the host or outside world. Once you separate those ideas, Docker networking becomes less scary.",
+      },
     },
     {
       id: "docker-compose",
@@ -252,6 +246,7 @@ export const demoCourse: Course = {
       title: "Docker Compose",
       goal: "Put multiple services together into a repeatable local environment.",
       duration: 8,
+      lesson: {
       lead:
         "Real applications often need more than one container. Compose lets you describe those services and their relationships as a single project.",
       sections: [
@@ -275,11 +270,12 @@ export const demoCourse: Course = {
         "Compose lets you describe a multi-container application as one reproducible environment.",
       teachingScript:
         "So far, we've mostly talked about one container at a time. Real projects often have several services: maybe an API, a database, and a cache. Docker Compose lets you describe that whole stack in one configuration file. Instead of remembering a long sequence of commands, you describe the relationships once and bring the environment up as a unit. That's where Docker starts to feel genuinely useful in day-to-day development.",
+      },
     },
   ],
 };
 
 export function getEpisode(courseId: string, episodeId: string) {
   if (courseId !== demoCourse.id) return undefined;
-  return demoCourse.episodes.find((episode) => episode.id === episodeId);
+  return demoCourse.episodes.find((episode) => episode.id === episodeId)?.lesson;
 }

@@ -141,7 +141,7 @@ export default function Home() {
             <div className="feature-number">03 / LISTEN</div>
             <h2>Take the lesson with you.</h2>
             <p>
-              Every episode will have a dedicated teaching script designed for
+              Every episode includes a dedicated teaching script designed for
               spoken explanation.
             </p>
           </article>
